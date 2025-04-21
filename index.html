@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radians Interactive Lesson</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Step 1: Name Entry Screen -->
+    <div id="name-screen">
+      <h1>Welcome to the Radians Adventure</h1>
+      <img src="images/intro.jpg" alt="Exploring Radians Graphic" style="max-width: 100%; height: auto; margin: 20px 0; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
+      <p>Please enter your first and last name to begin:</p>
+      <input type="text" id="student-name" placeholder="First Last" />
+      <button onclick="startLesson()">Start</button>
+    </div>
+
+    <!-- Step 2: Lesson Content Screens (populated dynamically) -->
+    <div id="lesson-screen" style="display: none;">
+      <div id="lesson-content"></div>
+      <div class="navigation-buttons">
+        <button id="back-button" onclick="previousSlide()" style="display: none;">Back</button>
+        <button id="next-button" onclick="nextSlide()">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Circle Illustration for Degrees -->
+    <div id="degrees-visual" style="display: none;">
+      <h2>What is a Degree?</h2>
+      <p>A full rotation divided into 360 equal parts creates one degree. Here’s what that looks like:</p>
+      <img src="images/circle-360.jpg" alt="Circle Divided into 360 Degrees" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 20px 0;" />
+      <button onclick="showAncientTheory()">Next</button>
+    </div>
+
+    <!-- Step 4: Ancient Theory Screen -->
+    <div id="ancient-theory" style="display: none;">
+      <h2>Where Did 360 Come From?</h2>
+      <p>Rumor has it the "ancients" believed there were 360 days in a year. They observed that the Earth made a complete rotation around the sun during that year. So... 1 day = 1 degree of rotation in the sky. That’s where the idea of 360° in a circle may have come from!</p>
+      <button onclick="continueLesson()">Continue</button>
+    </div>
+
+    
+    <!-- Step 6: PDF Report Button -->
+    <div id="report-screen" style="display: none;">
+      <h2>You've completed the lesson!</h2>
+      <button onclick="generatePDF()">📄 Download Report</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
