@@ -1,3 +1,6 @@
+
+window.studentName = "";
+
 let currentSlide = 0;
 let studentResponses = {};
 let correctAnswers = {
@@ -23,6 +26,8 @@ let correctAnswers = {
     tan1Q: "1",
     sin2Q: "-1",
     cos2Q: "-√3/2"
+ 
+
   };
   
 
@@ -404,7 +409,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function startLesson() {
-  studentName = document.getElementById("student-name").value.trim();
+  window.studentName = document.getElementById("student-name").value.trim();
+
   if (!studentName) {
     alert("Please enter your name to begin.");
     return;
@@ -435,19 +441,27 @@ function nextSlide() {
     if (slideContent[currentSlide]?.html?.includes("checkpoint-content")) {
       const score = calculateScore();
       const finalBlock = document.getElementById("checkpoint-content");
-  
+    
       if (finalBlock) {
         finalBlock.innerHTML = `<p>Your final score is <strong>${score}%</strong>.</p>`;
-  
+      
         if (score >= 80) {
-          finalBlock.innerHTML += `<p>✅ Great job! You’ve passed. Click below to launch the final activity.</p>
-                                   <button onclick="launchFinal()">Continue to Final</button>`;
+          finalBlock.innerHTML += `
+            <p>✅ Great job! You passed the lesson.</p>
+            <button onclick="generatePDF()">📄 Download PDF Report</button>
+          `;
         } else {
-          finalBlock.innerHTML += `<p>❌ It looks like you didn’t hit the 80% mark. No worries — click below to restart and try again!</p>
-                                   <button onclick="restartLesson()">🔁 Restart Lesson</button>`;
+          finalBlock.innerHTML += `
+            <p>❌ Uh oh! You need at least 80% to unlock the report.</p>
+            <p>Try again and aim for that 80% mastery!</p>
+            <button onclick="restartLesson()">🔁 Restart Lesson</button>
+          `;
         }
       }
+      
     }
+    
+    
   }
   
   
@@ -524,28 +538,54 @@ function launchFinal() {
     document.getElementById("report-screen").style.display = "block";
 }
 
-  function restartLesson() {
-    currentSlide = 0;
-    studentResponses = {};
-    document.getElementById("lesson-screen").style.display = "block";
-    document.getElementById("unit-circle-builder").style.display = "none";
-    document.getElementById("report-screen").style.display = "none";
-    loadSlide(currentSlide);
+function restartLesson() {
+  currentSlide = 0;
+  studentResponses = {};
+  window.studentName = "";
+  window.currentStep = 0;
+
+  // Clear report content in case it's showing
+  const finalBlock = document.getElementById("checkpoint-content");
+  if (finalBlock) {
+    finalBlock.innerHTML = "";
   }
+
+  // Reset all screens
+  document.getElementById("name-screen").style.display = "block";
+  document.getElementById("lesson-screen").style.display = "none";
+  document.getElementById("unit-circle-builder").style.display = "none";
+  document.getElementById("report-screen").style.display = "none";
+
+  // Reset the name field
+  document.getElementById("student-name").value = "";
+}
+
+
   
 // --- PDF Report Generator ---
 function generatePDF() {
-  const { jsPDF } = window.jspdf;
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("⚠️ jsPDF library not loaded properly.");
+    console.error("❌ window.jspdf.jsPDF not found");
+    return;
+  }
+
+  const jsPDF = window.jspdf.jsPDF;
   const doc = new jsPDF();
+
+  const name = window.studentName || "Unknown Student";
+  const steps = window.currentStep || 0;
+  const score = calculateScore();
 
   doc.setFont("Georgia", "normal");
   doc.setFontSize(14);
+
   doc.text("Radians Interactive Lesson Report", 20, 20);
-  doc.text(`Student: ${studentName}`, 20, 30);
-  doc.text(`Progress: Completed unit circle in ${currentStep} steps.`, 20, 40);
+  doc.text(`Student: ${name}`, 20, 30);
+  doc.text(`Progress: Completed unit circle in ${steps} steps.`, 20, 40);
   doc.text("Final Rotation: 360° = 2π radians", 20, 50);
-  const score = calculateScore();
   doc.text(`Final Score: ${score}%`, 20, 60);
-  
-  doc.save(`${studentName.replace(/\s+/g, '_')}_Radians_Report.pdf`);
+
+  doc.save(`${name.replace(/\s+/g, '_')}_Radians_Report.pdf`);
 }
+
