@@ -479,7 +479,8 @@ const ctx = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 const radius = 150;
-let currentStep = 0;
+window.currentStep = 0;
+
 const maxSteps = 12;
 
 document.getElementById("rotateButton").addEventListener("click", () => {
@@ -563,6 +564,7 @@ function restartLesson() {
 
   
 // --- PDF Report Generator ---
+// --- PDF Report Generator ---
 function generatePDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert("⚠️ jsPDF library not loaded properly.");
@@ -588,4 +590,24 @@ function generatePDF() {
 
   doc.save(`${name.replace(/\s+/g, '_')}_Radians_Report.pdf`);
 }
+
+// 🔐 Toggle dev panel with Shift + `
+document.addEventListener("keydown", (e) => {
+  if (e.shiftKey && e.key === "`") {
+    const devPanel = document.getElementById("dev-controls");
+    devPanel.style.display = devPanel.style.display === "none" ? "block" : "none";
+    console.log(devPanel.style.display === "block" ? "🕶️ Dev panel shown" : "🚫 Dev panel hidden");
+  }
+});
+
+// 🧪 Unlock PDF with code
+function tryDevPDF() {
+  const code = document.getElementById("dev-code").value.trim();
+  if (code === "1") {
+    generatePDF();
+  } else {
+    alert("❌ Invalid dev code.");
+  }
+}
+
 
